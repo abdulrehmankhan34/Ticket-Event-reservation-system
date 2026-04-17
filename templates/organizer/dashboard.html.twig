@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Organizer Dashboard{% endblock %}
+
+{% block body %}
+    <h1>Organizer</h1>
+
+    {% if profile is null %}
+        <p>You are not registered as an organizer yet.</p>
+        <p>
+            <a href="{{ path('app_organizer_apply') }}">Apply as Organizer</a>
+        </p>
+    {% else %}
+        <ul>
+            <li>Status: <strong>{{ profile.approvalStatus }}</strong></li>
+            <li>Active: <strong>{{ profile.active ? 'yes' : 'no' }}</strong></li>
+            <li>Applied at: <strong>{{ profile.createdAt|date('Y-m-d H:i') }}</strong></li>
+        </ul>
+
+        {% if not profile.active %}
+            <div style="padding: 12px; background: #fff5d6; border: 1px solid #ffd27a;">
+                Your organizer account is <strong>deactivated</strong>. Contact admin.
+            </div>
+        {% elseif profile.approvalStatus == 'pending' %}
+            <div style="padding: 12px; background: #eef5ff; border: 1px solid #b9d6ff;">
+                Your organizer application is <strong>pending</strong> admin approval.
+            </div>
+        {% elseif profile.approvalStatus == 'rejected' %}
+            <div style="padding: 12px; background: #ffe5e5; border: 1px solid #ffb3b3;">
+                Your organizer application was <strong>rejected</strong>.
+            </div>
+        {% else %}
+            <p>
+                Approved. Organizer area: <a href="{{ path('app_organizer_home') }}">Open</a>
+            </p>
+            <p>
+                Manage events: <a href="{{ path('app_organizer_events_index') }}">My events</a>
+            </p>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+

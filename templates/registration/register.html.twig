@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <h1>Create account</h1>
+    <p>You will receive <strong>2000 credits</strong> on registration.</p>
+
+    {{ form_start(registrationForm) }}
+        <div style="display:grid; gap:12px; max-width: 520px;">
+            {{ form_row(registrationForm.email) }}
+            {{ form_row(registrationForm.plainPassword.first) }}
+            {{ form_row(registrationForm.plainPassword.second) }}
+            <button type="submit" style="padding:10px 12px;">Create account</button>
+        </div>
+    {{ form_end(registrationForm) }}
+
+    <p style="margin-top: 12px;">
+        Already have an account? <a href="{{ path('app_login') }}">Login</a>
+    </p>
+{% endblock %}
+

@@ -1,0 +1,7 @@
+framework:
+  rate_limiter:
+    checkout:
+      # limit checkout bursts during flash sales
+      policy: 'sliding_window'
+      limit: 10
+      interval: '1 minute'

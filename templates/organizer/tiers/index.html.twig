@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ticket tiers{% endblock %}
+
+{% block body %}
+    <p><a href="{{ path('app_organizer_events_index') }}">← Back to my events</a></p>
+    <h1>Ticket tiers</h1>
+    <p><strong>Event:</strong> {{ event.name }}</p>
+
+    <p>
+        <a href="{{ path('app_organizer_tiers_new', {eventId: event.id}) }}">+ Create tier</a>
+    </p>
+
+    {% if tiers is empty %}
+        <p>No tiers yet.</p>
+    {% else %}
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+            <tr>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Name</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Base price</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Total seats</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Remaining</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Sale window</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for t in tiers %}
+                <tr>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ t.name }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ t.basePrice }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ t.totalSeats }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">
+                        {{ remainingByTierId[t.id]|default('—') }}
+                    </td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">
+                        {% if t.saleStartsAt or t.saleEndsAt %}
+                            {{ t.saleStartsAt ? t.saleStartsAt|date('Y-m-d H:i') : '—' }}
+                            →
+                            {{ t.saleEndsAt ? t.saleEndsAt|date('Y-m-d H:i') : '—' }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">
+                        <a href="{{ path('app_organizer_tiers_edit', {eventId: event.id, id: t.id}) }}">Edit</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
+

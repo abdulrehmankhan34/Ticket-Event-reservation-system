@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Events{% endblock %}
+
+{% block body %}
+    <h1>Upcoming events</h1>
+
+    <form method="get" action="{{ path('app_events_index') }}" style="display:grid; gap:10px; padding:12px; border:1px solid #ddd; border-radius:8px;">
+        <div style="display:grid; gap:8px; grid-template-columns: 2fr 1fr 1fr 1fr;">
+            <label>
+                Search
+                <input name="q" value="{{ filters.q }}" placeholder="Event name..." style="width:100%; padding:8px;">
+            </label>
+            <label>
+                Category
+                <input name="category" value="{{ filters.category }}" placeholder="Concert, Sports..." style="width:100%; padding:8px;">
+            </label>
+            <label>
+                From
+                <input type="datetime-local" name="date_from" value="{{ filters.date_from }}" style="width:100%; padding:8px;">
+            </label>
+            <label>
+                To
+                <input type="datetime-local" name="date_to" value="{{ filters.date_to }}" style="width:100%; padding:8px;">
+            </label>
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:center;">
+            <label>
+                Online
+                <select name="online" style="padding:8px;">
+                    <option value="" {{ filters.online == '' ? 'selected' : '' }}>Any</option>
+                    <option value="1" {{ filters.online == '1' ? 'selected' : '' }}>Online</option>
+                    <option value="0" {{ filters.online == '0' ? 'selected' : '' }}>Physical</option>
+                </select>
+            </label>
+
+            <button type="submit" style="padding:10px 12px;">Apply filters</button>
+            <a href="{{ path('app_events_index') }}">Reset</a>
+        </div>
+    </form>
+
+    {% if events is empty %}
+        <p style="margin-top: 16px;">No upcoming events yet.</p>
+    {% else %}
+        <div style="margin-top: 16px; display:grid; gap:12px;">
+            {% for e in events %}
+                <div style="padding:12px; border:1px solid #eee; border-radius:8px;">
+                    <h2 style="margin:0 0 6px 0;">
+                        <a href="{{ path('app_events_show', {id: e.id}) }}">{{ e.name }}</a>
+                    </h2>
+                    <div style="color:#555;">
+                        <div><strong>When:</strong> {{ e.startsAt|date('Y-m-d H:i') }} ({{ e.timezone }})</div>
+                        <div><strong>Category:</strong> {{ e.category }}</div>
+                        <div>
+                            <strong>Venue:</strong>
+                            {% if e.online %}
+                                Online
+                            {% else %}
+                                {{ e.venueName ?: 'TBA' }}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% set tierList = tiersByEvent[e.id] ?? [] %}
+                    {% if tierList is not empty %}
+                        <div style="margin-top: 10px;">
+                            <strong>Ticket tiers:</strong>
+                            <ul style="margin: 6px 0 0 18px;">
+                                {% for t in tierList %}
+                                    {% set remaining = remainingByTierId[t.id] ?? t.totalSeats %}
+                                    <li>
+                                        {{ t.name }} — {{ t.basePrice }} credits (base)
+                                        — <strong>{{ remaining }}</strong> left
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div style="margin-top:10px; color:#777;">No tiers defined yet.</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
+

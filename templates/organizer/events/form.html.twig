@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <p><a href="{{ path('app_organizer_events_index') }}">← Back to my events</a></p>
+    <h1>{{ title }}</h1>
+
+    {{ form_start(form) }}
+        <div style="display:grid; gap:12px; max-width: 720px;">
+            {{ form_row(form.name) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.category) }}
+            {{ form_row(form.startsAt) }}
+            {{ form_row(form.timezone) }}
+            {{ form_row(form.isOnline) }}
+            {{ form_row(form.venueName) }}
+            {{ form_row(form.venueAddress) }}
+            {{ form_row(form.status) }}
+            {{ form_row(form.bannerUpload) }}
+
+            <button type="submit" style="padding:10px 12px;">Save</button>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}
+

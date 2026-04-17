@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cart{% endblock %}
+
+{% block body %}
+    <h1>Cart (reservations)</h1>
+    <p>Seats are held for <strong>10 minutes</strong>.</p>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div style="padding:10px; margin:8px 0; border:1px solid #ddd;">
+                <strong>{{ label }}:</strong> {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% if reservations is empty %}
+        <p>Your cart is empty.</p>
+        <p><a href="{{ path('app_events_index') }}">Browse events</a></p>
+    {% else %}
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+            <tr>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Event</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Tier</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Qty</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Expires</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for r in reservations %}
+                <tr>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ r.tier.event.name }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ r.tier.name }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ r.quantity }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ r.expiresAt|date('Y-m-d H:i:s') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <form method="post" action="{{ path('app_checkout') }}" style="margin-top: 16px;">
+            <button type="submit" style="padding:10px 12px;">Checkout</button>
+        </form>
+    {% endif %}
+{% endblock %}
+

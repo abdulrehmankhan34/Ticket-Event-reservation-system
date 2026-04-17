@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ event.name }}{% endblock %}
+
+{% block body %}
+    <p><a href="{{ path('app_events_index') }}">← Back to events</a></p>
+
+    <h1>{{ event.name }}</h1>
+
+    <div style="color:#555; display:grid; gap:6px;">
+        <div><strong>When:</strong> {{ event.startsAt|date('Y-m-d H:i') }} ({{ event.timezone }})</div>
+        <div><strong>Category:</strong> {{ event.category }}</div>
+        <div><strong>Status:</strong> {{ event.status }}</div>
+        <div>
+            <strong>Venue:</strong>
+            {% if event.online %}
+                Online
+            {% else %}
+                {{ event.venueName ?: 'TBA' }}
+                {% if event.venueAddress %} — {{ event.venueAddress }}{% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <h2 style="margin-top: 16px;">Description</h2>
+    <div style="white-space: pre-wrap;">{{ event.description }}</div>
+
+    <h2 style="margin-top: 16px;">Ticket tiers</h2>
+    {% if tiers is empty %}
+        <p>No tiers available yet.</p>
+    {% else %}
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Tier</th>
+                    <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Base price</th>
+                    <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Remaining</th>
+                    <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Sale window</th>
+                    <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Cart</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in tiers %}
+                    {% set remaining = remainingByTierId[t.id] ?? t.totalSeats %}
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">{{ t.name }}</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">{{ t.basePrice }} credits</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">
+                            {% if remaining > 0 %}
+                                <strong>{{ remaining }}</strong> left
+                            {% else %}
+                                <strong>Sold out</strong>
+                            {% endif %}
+                        </td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">
+                            {% if t.saleStartsAt or t.saleEndsAt %}
+                                {{ t.saleStartsAt ? t.saleStartsAt|date('Y-m-d H:i') : '—' }}
+                                →
+                                {{ t.saleEndsAt ? t.saleEndsAt|date('Y-m-d H:i') : '—' }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">
+                            {% if app.user and remaining > 0 %}
+                                <form method="post" action="{{ path('app_cart_add', {tierId: t.id}) }}" style="display:flex; gap:8px; align-items:center;">
+                                    <input type="number" name="quantity" value="1" min="1" max="{{ remaining }}" style="width:70px; padding:6px;">
+                                    <button type="submit">Reserve</button>
+                                </form>
+                            {% elseif not app.user %}
+                                <a href="{{ path('app_login') }}">Login</a>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
+

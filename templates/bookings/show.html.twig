@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Booking {{ booking.id }}{% endblock %}
+
+{% block body %}
+    <h1>Booking confirmation</h1>
+
+    <div style="display:grid; gap:6px; color:#555;">
+        <div><strong>Booking ID:</strong> {{ booking.id }}</div>
+        <div><strong>Status:</strong> {{ booking.status }}</div>
+        <div><strong>Total credits:</strong> {{ booking.totalCredits }}</div>
+        <div><strong>Event:</strong> {{ booking.event.name }}</div>
+        <div><strong>Created:</strong> {{ booking.createdAt|date('Y-m-d H:i:s') }}</div>
+    </div>
+
+    <h2 style="margin-top: 16px;">Items</h2>
+    {% if items is empty %}
+        <p>No items.</p>
+    {% else %}
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+            <tr>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Tier</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Qty</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Unit base</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Unit final</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Feeeee</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">E‑Ticket</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for bi in items %}
+                <tr>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ bi.tier.name }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ bi.quantity }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ bi.unitBasePrice }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ bi.unitFinalPrice }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ bi.systemFee }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">
+                        {% if ticketByItemId[bi.id] is defined %}
+                            <a href="{{ path('app_eticket_download', {id: bi.id}) }}">Download PDF</a>
+                        {% else %}
+                            Generating…
+                            <a href="{{ path('app_eticket_download', {id: bi.id}) }}">Check</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
+

@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Event stats{% endblock %}
+
+{% block body %}
+    <p><a href="{{ path('app_organizer_events_index') }}">← Back to my events</a></p>
+
+    <h1>Event stats</h1>
+    <p><strong>Event:</strong> {{ event.name }}</p>
+
+    <h2>Bookings</h2>
+    <ul>
+        <li>Confirmed bookings: <strong>{{ stats.bookingCount }}</strong></li>
+        <li>Tickets sold (confirmed): <strong>{{ stats.ticketsSold }}</strong></li>
+    </ul>
+
+    <h2>Revenue breakdown</h2>
+    <ul>
+        <li>Gross (base price total): <strong>{{ stats.gross }}</strong> credits</li>
+        <li>System fee (1%): <strong>{{ stats.systemFee }}</strong> credits</li>
+        <li>Final paid by users: <strong>{{ stats.final }}</strong> credits</li>
+        <li>Net to organizer: <strong>{{ stats.gross }}</strong> credits</li>
+    </ul>
+
+    <h2>Seat availability per tier</h2>
+    {% if tiers is empty %}
+        <p>No tiers yet.</p>
+    {% else %}
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+            <tr>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Tier</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Total seats</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Remaining</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Sale window</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for t in tiers %}
+                <tr>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ t.name }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ t.totalSeats }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">
+                        {{ remainingByTierId[t.id]|default('—') }}
+                    </td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">
+                        {% if t.saleStartsAt or t.saleEndsAt %}
+                            {{ t.saleStartsAt ? t.saleStartsAt|date('Y-m-d H:i') : '—' }}
+                            →
+                            {{ t.saleEndsAt ? t.saleEndsAt|date('Y-m-d H:i') : '—' }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
+

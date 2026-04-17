@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+    <h1>Login</h1>
+
+    {% if error %}
+        <div style="padding: 12px; background: #ffe5e5; border: 1px solid #ffb3b3; margin-bottom: 12px;">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
+
+    <form method="post">
+        <div style="display:grid; gap:12px; max-width: 420px;">
+            <label>
+                Email
+                <input type="email" name="_username" value="{{ last_username }}" autocomplete="email" required autofocus style="width:100%; padding:8px;">
+            </label>
+
+            <label>
+                Password
+                <input type="password" name="_password" autocomplete="current-password" required style="width:100%; padding:8px;">
+            </label>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button type="submit" style="padding:10px 12px;">Sign in</button>
+        </div>
+    </form>
+
+    <p style="margin-top: 12px;">
+        No account? <a href="{{ path('app_register') }}">Register</a>
+    </p>
+{% endblock %}
+

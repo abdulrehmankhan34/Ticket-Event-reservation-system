@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin - Organizers{% endblock %}
+
+{% block body %}
+    <h1>Organizer Management</h1>
+
+    <h2>Pending approvals ({{ pending|length }})</h2>
+    {% if pending is empty %}
+        <p>No pending organizer applications.</p>
+    {% else %}
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Email</th>
+                    <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Applied</th>
+                    <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in pending %}
+                <tr>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.user.email }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.createdAt|date('Y-m-d H:i') }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee; display:flex; gap:8px; flex-wrap:wrap;">
+                        <form method="post" action="{{ path('app_admin_organizers_approve', {id: p.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('approve_org_' ~ p.id) }}">
+                            <button type="submit">Approve</button>
+                        </form>
+                        <form method="post" action="{{ path('app_admin_organizers_reject', {id: p.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('reject_org_' ~ p.id) }}">
+                            <button type="submit">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <h2 style="margin-top:24px;">All organizers ({{ all|length }})</h2>
+    {% if all is empty %}
+        <p>No organizer profiles yet.</p>
+    {% else %}
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+            <tr>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Emailll</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Status</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Active</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in all %}
+                <tr>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.user.email }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.approvalStatus }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.active ? 'yes' : 'no' }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">
+                        <form method="post" action="{{ path('app_admin_organizers_toggle_active', {id: p.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('toggle_org_' ~ p.id) }}">
+                            <button type="submit">{{ p.active ? 'Deactivate' : 'Reactivate' }}</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
+

@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Events{% endblock %}
+
+{% block body %}
+    <h1>My events</h1>
+
+    <p>
+        <a href="{{ path('app_organizer_events_new') }}">+ Create event</a>
+    </p>
+
+    {% if events is empty %}
+        <p>No events yet.</p>
+    {% else %}
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+            <tr>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Name</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">When</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Status</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for e in events %}
+                <tr>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">
+                        <a href="{{ path('app_events_show', {id: e.id}) }}">{{ e.name }}</a>
+                    </td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ e.startsAt|date('Y-m-d H:i') }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ e.status }}</td>
+                    <td style="padding:8px; border-bottom:1px solid #eee; display:flex; gap:10px; flex-wrap:wrap;">
+                        <a href="{{ path('app_organizer_events_edit', {id: e.id}) }}">Edit</a>
+                        <a href="{{ path('app_organizer_tiers_index', {eventId: e.id}) }}">Ticket tiers</a>
+                        <a href="{{ path('app_organizer_events_stats', {id: e.id}) }}">Stats</a>
+
+                        {% if e.status != 'cancelled' %}
+                            <form method="post" action="{{ path('app_organizer_events_cancel', {id: e.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('cancel_organizer_event_' ~ e.id) }}">
+                                <button type="submit" onclick="return confirm('Cancel this event and refund all ticket holders?')">
+                                    Cancel + refund
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
+
