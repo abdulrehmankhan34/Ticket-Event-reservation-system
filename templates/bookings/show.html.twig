@@ -5,43 +5,60 @@
 {% block body %}
     <h1>Booking confirmation</h1>
 
-    <div style="display:grid; gap:6px; color:#555;">
-        <div><strong>Booking ID:</strong> {{ booking.id }}</div>
-        <div><strong>Status:</strong> {{ booking.status }}</div>
-        <div><strong>Total credits:</strong> {{ booking.totalCredits }}</div>
-        <div><strong>Event:</strong> {{ booking.event.name }}</div>
-        <div><strong>Created:</strong> {{ booking.createdAt|date('Y-m-d H:i:s') }}</div>
-    </div>
+    <section class="card" style="margin-bottom:16px;">
+        <div class="meta-grid">
+            <div><strong>Booking ID</strong><div style="margin-top:4px; color:#374151;">#{{ booking.id }}</div></div>
+            <div>
+                <strong>Status</strong>
+                <div style="margin-top:6px;">
+                    <span class="pill">
+                        <span class="dot {{ booking.status in ['paid','confirmed','complete','completed'] ? 'ok' : 'primary' }}"></span>
+                        {{ booking.status }}
+                    </span>
+                </div>
+            </div>
+            <div><strong>Total credits</strong><div style="margin-top:4px; color:#374151;">{{ booking.totalCredits }}</div></div>
+            <div><strong>Event</strong><div style="margin-top:4px; color:#374151;">{{ booking.event.name }}</div></div>
+            <div><strong>Created</strong><div style="margin-top:4px; color:#374151;">{{ booking.createdAt|date('Y-m-d H:i') }}</div></div>
+        </div>
+    </section>
 
-    <h2 style="margin-top: 16px;">Items</h2>
+    <h2>Items</h2>
     {% if items is empty %}
         <p>No items.</p>
     {% else %}
-        <table style="width:100%; border-collapse: collapse;">
+        <table class="table">
             <thead>
             <tr>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Tier</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Qty</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Unit base</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Unit final</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Feeeee</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">E‑Ticket</th>
+                <th>Tier</th>
+                <th>Qty</th>
+                <th>Unit base</th>
+                <th>Unit final</th>
+                <th>Fee</th>
+                <th>E‑Ticket</th>
             </tr>
             </thead>
             <tbody>
             {% for bi in items %}
                 <tr>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ bi.tier.name }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ bi.quantity }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ bi.unitBasePrice }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ bi.unitFinalPrice }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ bi.systemFee }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">
+                    <td>{{ bi.tier.name }}</td>
+                    <td>{{ bi.quantity }}</td>
+                    <td>{{ bi.unitBasePrice }}</td>
+                    <td>{{ bi.unitFinalPrice }}</td>
+                    <td>{{ bi.systemFee }}</td>
+                    <td>
                         {% if ticketByItemId[bi.id] is defined %}
-                            <a href="{{ path('app_eticket_download', {id: bi.id}) }}">Download PDF</a>
+                            <div class="actions">
+                                <a class="btn btn-primary" href="{{ path('app_eticket_download', {id: bi.id}) }}">Download PDF</a>
+                            </div>
                         {% else %}
-                            Generating…
-                            <a href="{{ path('app_eticket_download', {id: bi.id}) }}">Check</a>
+                            <div class="actions">
+                                <span class="pill" title="E-ticket is being generated">
+                                    <span class="spinner" aria-hidden="true"></span>
+                                    Generating
+                                </span>
+                                <a class="btn btn-ghost" href="{{ path('app_eticket_download', {id: bi.id}) }}">Check</a>
+                            </div>
                         {% endif %}
                     </td>
                 </tr>

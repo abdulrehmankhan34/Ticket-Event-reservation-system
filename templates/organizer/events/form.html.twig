@@ -3,24 +3,90 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    <p><a href="{{ path('app_organizer_events_index') }}">← Back to my events</a></p>
-    <h1>{{ title }}</h1>
+    <div style="max-width: 920px; margin: 0 auto;">
+        <p style="margin:0 0 12px 0;">
+            <a href="{{ path('app_organizer_events_index') }}" style="
+                display:inline-flex;
+                align-items:center;
+                gap:8px;
+                padding:8px 12px;
+                border:1px solid #e5e7eb;
+                border-radius:10px;
+                background:#ffffff;
+                color:#111827;
+                text-decoration:none;
+                font-weight:700;
+                box-shadow: 0 1px 8px rgba(0,0,0,.04);
+            ">
+                <span aria-hidden="true">←</span>
+                Back to my events
+            </a>
+        </p>
 
-    {{ form_start(form) }}
-        <div style="display:grid; gap:12px; max-width: 720px;">
-            {{ form_row(form.name) }}
-            {{ form_row(form.description) }}
-            {{ form_row(form.category) }}
-            {{ form_row(form.startsAt) }}
-            {{ form_row(form.timezone) }}
-            {{ form_row(form.isOnline) }}
-            {{ form_row(form.venueName) }}
-            {{ form_row(form.venueAddress) }}
-            {{ form_row(form.status) }}
-            {{ form_row(form.bannerUpload) }}
+        <h1 style="margin:0 0 6px 0; font-size: 28px; letter-spacing:-0.02em;">{{ title }}</h1>
+        <p style="margin:0 0 16px 0; color:#6b7280;">
+            Fill in the details below. Banner upload is optional.
+        </p>
 
-            <button type="submit" style="padding:10px 12px;">Save</button>
+        <div style="
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            background: #ffffff;
+            padding: 18px;
+            box-shadow: 0 10px 30px rgba(17,24,39,.06);
+        ">
+            {{ form_start(form) }}
+                <div style="display:grid; gap:12px;">
+                    {{ form_row(form.name, { attr: { style: 'width:100%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;' } }) }}
+                    {{ form_row(form.description, { attr: { style: 'width:100%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none; min-height: 120px;' } }) }}
+
+                    <div style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px;">
+                        {{ form_row(form.category, { attr: { style: 'width:100%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;' } }) }}
+                        {{ form_row(form.status, { attr: { style: 'width:100%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;' } }) }}
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px;">
+                        {{ form_row(form.startsAt, { attr: { style: 'width:100%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;' } }) }}
+                        {{ form_row(form.timezone, { attr: { style: 'width:100%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;' } }) }}
+                    </div>
+
+                    <div style="padding:12px; border:1px solid #e5e7eb; border-radius:12px; background:#f9fafb;">
+                        {{ form_row(form.isOnline) }}
+                        <div style="margin-top: 10px; display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px;">
+                            {{ form_row(form.venueName, { attr: { style: 'width:100%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;' } }) }}
+                            {{ form_row(form.venueAddress, { attr: { style: 'width:100%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;' } }) }}
+                        </div>
+                    </div>
+
+                    {{ form_row(form.bannerUpload, { attr: { style: 'width:100%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none; background:#ffffff;' } }) }}
+
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top: 4px;">
+                        <button type="submit" style="
+                            padding:10px 12px;
+                            border-radius:12px;
+                            border:1px solid #1d4ed8;
+                            background:#2563eb;
+                            color:white;
+                            font-weight:800;
+                            cursor:pointer;
+                        ">
+                            Save
+                        </button>
+                        <a href="{{ path('app_organizer_events_index') }}" style="
+                            text-decoration:none;
+                            padding:10px 12px;
+                            border-radius:12px;
+                            border:1px solid #e5e7eb;
+                            background:#ffffff;
+                            color:#111827;
+                            font-weight:800;
+                        ">
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+            {{ form_end(form) }}
         </div>
-    {{ form_end(form) }}
+    </div>
 {% endblock %}
 

@@ -3,19 +3,79 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    <p><a href="{{ path('app_organizer_tiers_index', {eventId: event.id}) }}">← Back to tiers</a></p>
-    <h1>{{ title }}</h1>
-    <p><strong>Event:</strong> {{ event.name }}</p>
+    <div style="max-width: 920px; margin: 0 auto;">
+        <p style="margin:0 0 12px 0;">
+            <a href="{{ path('app_organizer_tiers_index', {eventId: event.id}) }}" style="
+                display:inline-flex;
+                align-items:center;
+                gap:8px;
+                padding:8px 12px;
+                border:1px solid #e5e7eb;
+                border-radius:10px;
+                background:#ffffff;
+                color:#111827;
+                text-decoration:none;
+                font-weight:700;
+                box-shadow: 0 1px 8px rgba(0,0,0,.04);
+            ">
+                <span aria-hidden="true">←</span>
+                Back to tiers
+            </a>
+        </p>
 
-    {{ form_start(form) }}
-        <div style="display:grid; gap:12px; max-width: 540px;">
-            {{ form_row(form.name) }}
-            {{ form_row(form.basePrice) }}
-            {{ form_row(form.totalSeats) }}
-            {{ form_row(form.saleStartsAt) }}
-            {{ form_row(form.saleEndsAt) }}
-            <button type="submit" style="padding:10px 12px;">Save</button>
+        <h1 style="margin:0 0 6px 0; font-size: 28px; letter-spacing:-0.02em;">{{ title }}</h1>
+        <p style="margin:0 0 16px 0; color:#6b7280;">
+            <strong style="color:#111827;">Event:</strong> {{ event.name }}
+        </p>
+
+        <div style="
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            background: #ffffff;
+            padding: 18px;
+            box-shadow: 0 10px 30px rgba(17,24,39,.06);
+        ">
+            {{ form_start(form) }}
+                <div style="display:grid; gap:12px; max-width: 620px;">
+                    {{ form_row(form.name, { attr: { style: 'width:100%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;' } }) }}
+
+                    <div style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px;">
+                        {{ form_row(form.basePrice, { attr: { style: 'width:100%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;' } }) }}
+                        {{ form_row(form.totalSeats, { attr: { style: 'width:100%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;' } }) }}
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px;">
+                        {{ form_row(form.saleStartsAt, { attr: { style: 'width:100%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;' } }) }}
+                        {{ form_row(form.saleEndsAt, { attr: { style: 'width:100%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;' } }) }}
+                    </div>
+
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top: 4px;">
+                        <button type="submit" style="
+                            padding:10px 12px;
+                            border-radius:12px;
+                            border:1px solid #1d4ed8;
+                            background:#2563eb;
+                            color:white;
+                            font-weight:800;
+                            cursor:pointer;
+                        ">
+                            Save
+                        </button>
+                        <a href="{{ path('app_organizer_tiers_index', {eventId: event.id}) }}" style="
+                            text-decoration:none;
+                            padding:10px 12px;
+                            border-radius:12px;
+                            border:1px solid #e5e7eb;
+                            background:#ffffff;
+                            color:#111827;
+                            font-weight:800;
+                        ">
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+            {{ form_end(form) }}
         </div>
-    {{ form_end(form) }}
+    </div>
 {% endblock %}
 

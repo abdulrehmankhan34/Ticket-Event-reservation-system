@@ -7,59 +7,67 @@
 
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            <div style="padding:10px; margin:8px 0; border:1px solid #ddd;">
-                <strong>{{ label }}:</strong> {{ message }}
+            <div class="alert {{ label == 'success' ? 'alert-success' : (label in ['error','danger'] ? 'alert-error' : 'alert-info') }}">
+                {{ message }}
             </div>
         {% endfor %}
     {% endfor %}
 
-    <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; margin-top: 12px;">
-        <div style="border:1px solid #eee; padding:12px; border-radius:8px;">
-            <div style="color:#555;">Total users</div>
-            <div style="font-size: 22px;"><strong>{{ users }}</strong></div>
+    <section class="kpi-grid" style="margin-top: 12px;">
+        <div class="card">
+            <div class="kpi-title">Total users</div>
+            <div class="kpi-value">{{ users }}</div>
         </div>
-        <div style="border:1px solid #eee; padding:12px; border-radius:8px;">
-            <div style="color:#555;">Total events</div>
-            <div style="font-size: 22px;"><strong>{{ events }}</strong></div>
+        <div class="card">
+            <div class="kpi-title">Total events</div>
+            <div class="kpi-value">{{ events }}</div>
         </div>
-        <div style="border:1px solid #eee; padding:12px; border-radius:8px;">
-            <div style="color:#555;">Tickets sold</div>
-            <div style="font-size: 22px;"><strong>{{ ticketsSold }}</strong></div>
+        <div class="card">
+            <div class="kpi-title">Tickets sold</div>
+            <div class="kpi-value">{{ ticketsSold }}</div>
         </div>
-        <div style="border:1px solid #eee; padding:12px; border-radius:8px;">
-            <div style="color:#555;">System revenue (1%)</div>
-            <div style="font-size: 22px;"><strong>{{ systemRevenue }}</strong></div>
+        <div class="card">
+            <div class="kpi-title">System revenue (1%)</div>
+            <div class="kpi-value">{{ systemRevenue }}</div>
+        </div>
+    </section>
+
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top: 18px;">
+        <h2 style="margin:0;">Events (recent)</h2>
+        <div class="actions">
+            <a class="btn btn-ghost" href="{{ path('app_admin_organizers_index') }}">Manage organizers</a>
         </div>
     </div>
-
-    <h2 style="margin-top: 18px;">Events (recent)</h2>
     {% if recentEvents is empty %}
         <p>No events yet.</p>
     {% else %}
-        <table style="width:100%; border-collapse: collapse;">
+        <table class="table" style="margin-top:10px;">
             <thead>
             <tr>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Name</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Status</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Starts</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actions</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Starts</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             {% for e in recentEvents %}
                 <tr>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">
-                        <a href="{{ path('app_events_show', {id: e.id}) }}">{{ e.name }}</a>
+                    <td style="font-weight:650;">
+                        <a class="subtle-link" href="{{ path('app_events_show', {id: e.id}) }}">{{ e.name }}</a>
                     </td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ e.status }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ e.startsAt|date('Y-m-d H:i') }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">
+                    <td>
+                        <span class="pill">
+                            <span class="dot {{ e.status == 'cancelled' ? '' : 'ok' }}"></span>
+                            {{ e.status }}
+                        </span>
+                    </td>
+                    <td style="color:#374151;">{{ e.startsAt|date('Y-m-d H:i') }}</td>
+                    <td>
                         {% if e.status != 'cancelled' %}
-                            <form method="post" action="{{ path('app_admin_event_cancel', {id: e.id}) }}">
+                            <form method="post" action="{{ path('app_admin_event_cancel', {id: e.id}) }}" class="actions">
                                 <input type="hidden" name="_token" value="{{ csrf_token('cancel_event_' ~ e.id) }}">
-                                <button type="submit" onclick="return confirm('Cancel this event and refund all ticket holders?')">
-                                    Cancel + refund
-                                </button>
+                                <button class="btn btn-danger" type="submit" onclick="return confirm('Cancel this event and refund all ticket holders?')">Cancel + refund</button>
                             </form>
                         {% else %}
                             —
@@ -71,8 +79,8 @@
         </table>
     {% endif %}
 
-    <p style="margin-top: 12px;">
-        Organizer approvals: <a href="{{ path('app_admin_organizers_index') }}">Manage organizers</a>
-    </p>
+    <div class="alert alert-info" style="margin-top:12px;">
+        Organizer approvals are available in <a class="subtle-link" href="{{ path('app_admin_organizers_index') }}">Manage organizers</a>.
+    </div>
 {% endblock %}
 

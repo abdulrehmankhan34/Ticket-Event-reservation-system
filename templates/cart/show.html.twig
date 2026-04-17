@@ -3,45 +3,66 @@
 {% block title %}Cart{% endblock %}
 
 {% block body %}
-    <h1>Cart (reservations)</h1>
-    <p>Seats are held for <strong>10 minutes</strong>.</p>
+    <h1>Cart</h1>
+    <div class="alert alert-info" style="margin-bottom:14px;">
+        Seats are held for <strong>10 minutes</strong>.
+    </div>
 
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            <div style="padding:10px; margin:8px 0; border:1px solid #ddd;">
-                <strong>{{ label }}:</strong> {{ message }}
+            <div class="alert {{ label == 'success' ? 'alert-success' : (label in ['error','danger'] ? 'alert-error' : 'alert-info') }}">
+                {{ message }}
             </div>
         {% endfor %}
     {% endfor %}
 
     {% if reservations is empty %}
-        <p>Your cart is empty.</p>
-        <p><a href="{{ path('app_events_index') }}">Browse events</a></p>
+        <section class="card">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap;">
+                <div>
+                    <div style="font-weight:750; font-size:16px; letter-spacing:-0.01em;">Your cart is empty</div>
+                    <div style="margin-top:6px; color:#6b7280; font-size:14px;">Browse events and reserve tickets. We’ll hold seats for 10 minutes.</div>
+                </div>
+                <div class="actions">
+                    <a class="btn btn-primary" href="{{ path('app_events_index') }}">Browse events</a>
+                </div>
+            </div>
+        </section>
     {% else %}
-        <table style="width:100%; border-collapse: collapse;">
+        <table class="table">
             <thead>
             <tr>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Event</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Tier</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Qty</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Expires</th>
+                <th>Event</th>
+                <th>Tier</th>
+                <th>Qty</th>
+                <th>Expires</th>
             </tr>
             </thead>
             <tbody>
             {% for r in reservations %}
                 <tr>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ r.tier.event.name }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ r.tier.name }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ r.quantity }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ r.expiresAt|date('Y-m-d H:i:s') }}</td>
+                    <td style="font-weight:650;">{{ r.tier.event.name }}</td>
+                    <td>{{ r.tier.name }}</td>
+                    <td>
+                        <span class="pill">
+                            <span class="dot primary"></span>
+                            {{ r.quantity }}
+                        </span>
+                    </td>
+                    <td style="color:#374151;">{{ r.expiresAt|date('Y-m-d H:i') }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
 
-        <form method="post" action="{{ path('app_checkout') }}" style="margin-top: 16px;">
-            <button type="submit" style="padding:10px 12px;">Checkout</button>
-        </form>
+        <div class="card" style="margin-top:16px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+            <div style="color:#6b7280; font-size:14px;">
+                Ready to confirm your reservation? Checkout will create a booking.
+            </div>
+            <form method="post" action="{{ path('app_checkout') }}">
+                <button class="btn btn-primary" type="submit">Checkout</button>
+            </form>
+        </div>
     {% endif %}
 {% endblock %}
 

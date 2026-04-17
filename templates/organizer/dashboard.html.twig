@@ -3,40 +3,154 @@
 {% block title %}Organizer Dashboard{% endblock %}
 
 {% block body %}
-    <h1>Organizer</h1>
-
-    {% if profile is null %}
-        <p>You are not registered as an organizer yet.</p>
-        <p>
-            <a href="{{ path('app_organizer_apply') }}">Apply as Organizer</a>
+    <div style="max-width: 920px; margin: 0 auto;">
+        <h1 style="margin:0 0 6px 0; font-size: 28px; letter-spacing:-0.02em;">Organizer</h1>
+        <p style="margin:0 0 16px 0; color:#6b7280;">
+            Apply, track approval status, and manage your events.
         </p>
-    {% else %}
-        <ul>
-            <li>Status: <strong>{{ profile.approvalStatus }}</strong></li>
-            <li>Active: <strong>{{ profile.active ? 'yes' : 'no' }}</strong></li>
-            <li>Applied at: <strong>{{ profile.createdAt|date('Y-m-d H:i') }}</strong></li>
-        </ul>
 
-        {% if not profile.active %}
-            <div style="padding: 12px; background: #fff5d6; border: 1px solid #ffd27a;">
-                Your organizer account is <strong>deactivated</strong>. Contact admin.
-            </div>
-        {% elseif profile.approvalStatus == 'pending' %}
-            <div style="padding: 12px; background: #eef5ff; border: 1px solid #b9d6ff;">
-                Your organizer application is <strong>pending</strong> admin approval.
-            </div>
-        {% elseif profile.approvalStatus == 'rejected' %}
-            <div style="padding: 12px; background: #ffe5e5; border: 1px solid #ffb3b3;">
-                Your organizer application was <strong>rejected</strong>.
+        {% if profile is null %}
+            <div style="
+                border: 1px solid #e5e7eb;
+                border-radius: 16px;
+                background: #ffffff;
+                padding: 18px;
+                box-shadow: 0 10px 30px rgba(17,24,39,.06);
+            ">
+                <h2 style="margin:0 0 8px 0; font-size: 18px;">Not an organizer yet</h2>
+                <p style="margin:0 0 14px 0; color:#6b7280;">
+                    Submit an organizer request. After admin approval, you can create events and ticket tiers.
+                </p>
+                <a href="{{ path('app_organizer_apply') }}" style="
+                    display:inline-flex;
+                    align-items:center;
+                    gap:8px;
+                    text-decoration:none;
+                    padding:10px 12px;
+                    border-radius:12px;
+                    border:1px solid #1d4ed8;
+                    background:#2563eb;
+                    color:white;
+                    font-weight:700;
+                ">
+                    Apply as Organizer
+                </a>
             </div>
         {% else %}
-            <p>
-                Approved. Organizer area: <a href="{{ path('app_organizer_home') }}">Open</a>
-            </p>
-            <p>
-                Manage events: <a href="{{ path('app_organizer_events_index') }}">My events</a>
-            </p>
+            <div style="
+                border: 1px solid #e5e7eb;
+                border-radius: 16px;
+                background: #ffffff;
+                padding: 18px;
+                box-shadow: 0 10px 30px rgba(17,24,39,.06);
+            ">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+                    <div>
+                        <div style="color:#6b7280; font-size: 13px;">Applied at</div>
+                        <div style="font-weight:700; color:#111827;">
+                            {{ profile.createdAt|date('Y-m-d H:i') }}
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <span style="
+                            padding:6px 10px;
+                            border-radius:999px;
+                            font-size: 13px;
+                            font-weight:700;
+                            color:#111827;
+                            background:#f3f4f6;
+                        ">
+                            Status: {{ profile.approvalStatus }}
+                        </span>
+                        <span style="
+                            padding:6px 10px;
+                            border-radius:999px;
+                            font-size: 13px;
+                            font-weight:700;
+                            color:#111827;
+                            background: {{ profile.active ? '#ecfdf5' : '#fff7ed' }};
+                            border: 1px solid {{ profile.active ? '#a7f3d0' : '#fed7aa' }};
+                        ">
+                            Active: {{ profile.active ? 'yes' : 'no' }}
+                        </span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 14px;">
+                    {% if not profile.active %}
+                        <div style="
+                            padding: 12px;
+                            border-radius: 12px;
+                            background: #fff7ed;
+                            border: 1px solid #fed7aa;
+                            color:#9a3412;
+                            font-weight: 600;
+                        ">
+                            Your organizer account is <strong>deactivated</strong>. Contact admin.
+                        </div>
+                    {% elseif profile.approvalStatus == 'pending' %}
+                        <div style="
+                            padding: 12px;
+                            border-radius: 12px;
+                            background: #eff6ff;
+                            border: 1px solid #bfdbfe;
+                            color:#1e40af;
+                            font-weight: 600;
+                        ">
+                            Your organizer application is <strong>pending</strong> admin approval.
+                        </div>
+                    {% elseif profile.approvalStatus == 'rejected' %}
+                        <div style="
+                            padding: 12px;
+                            border-radius: 12px;
+                            background: #fff1f2;
+                            border: 1px solid #fecdd3;
+                            color:#9f1239;
+                            font-weight: 600;
+                        ">
+                            Your organizer application was <strong>rejected</strong>.
+                        </div>
+                    {% else %}
+                        <div style="
+                            padding: 12px;
+                            border-radius: 12px;
+                            background: #ecfdf5;
+                            border: 1px solid #a7f3d0;
+                            color:#065f46;
+                            font-weight: 700;
+                        ">
+                            Approved. You can now manage events and ticket tiers.
+                        </div>
+
+                        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px;">
+                            <a href="{{ path('app_organizer_events_index') }}" style="
+                                text-decoration:none;
+                                padding:10px 12px;
+                                border-radius:12px;
+                                border:1px solid #e5e7eb;
+                                background:#ffffff;
+                                color:#111827;
+                                font-weight:700;
+                            ">
+                                My events
+                            </a>
+                            <a href="{{ path('app_organizer_home') }}" style="
+                                text-decoration:none;
+                                padding:10px 12px;
+                                border-radius:12px;
+                                border:1px solid #1d4ed8;
+                                background:#2563eb;
+                                color:white;
+                                font-weight:700;
+                            ">
+                                Open organizer area
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         {% endif %}
-    {% endif %}
+    </div>
 {% endblock %}
 

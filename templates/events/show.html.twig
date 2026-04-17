@@ -3,7 +3,24 @@
 {% block title %}{{ event.name }}{% endblock %}
 
 {% block body %}
-    <p><a href="{{ path('app_events_index') }}">← Back to events</a></p>
+    <p>
+        <a href="{{ path('app_events_index') }}" style="
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding:8px 12px;
+            border:1px solid #e5e7eb;
+            border-radius:10px;
+            background:#ffffff;
+            color:#111827;
+            text-decoration:none;
+            font-weight:600;
+            box-shadow: 0 1px 8px rgba(0,0,0,.04);
+        ">
+            <span aria-hidden="true">←</span>
+            Back to events
+        </a>
+    </p>
 
     <h1>{{ event.name }}</h1>
 
@@ -63,12 +80,35 @@
                         </td>
                         <td style="padding:8px; border-bottom:1px solid #eee;">
                             {% if app.user and remaining > 0 %}
-                                <form method="post" action="{{ path('app_cart_add', {tierId: t.id}) }}" style="display:flex; gap:8px; align-items:center;">
-                                    <input type="number" name="quantity" value="1" min="1" max="{{ remaining }}" style="width:70px; padding:6px;">
-                                    <button type="submit">Reserve</button>
+                                <form method="post" action="{{ path('app_cart_add', {tierId: t.id}) }}" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                                    <input type="number" name="quantity" value="1" min="1" max="{{ remaining }}" style="
+                                        width:80px;
+                                        padding:8px 10px;
+                                        border-radius:10px;
+                                        border:1px solid #e5e7eb;
+                                        outline:none;
+                                        background:#ffffff;
+                                    ">
+                                    <button type="submit" style="
+                                        padding:8px 12px;
+                                        border-radius:10px;
+                                        border:1px solid #1d4ed8;
+                                        background:#2563eb;
+                                        color:white;
+                                        font-weight:800;
+                                        cursor:pointer;
+                                    ">Reserve</button>
                                 </form>
                             {% elseif not app.user %}
-                                <a href="{{ path('app_login') }}">Login</a>
+                                <a href="{{ path('app_login') }}" style="
+                                    text-decoration:none;
+                                    padding:8px 12px;
+                                    border-radius:10px;
+                                    border:1px solid #e5e7eb;
+                                    background:#ffffff;
+                                    color:#111827;
+                                    font-weight:800;
+                                ">Login</a>
                             {% else %}
                                 —
                             {% endif %}

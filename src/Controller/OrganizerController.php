@@ -16,11 +16,20 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/organizer')]
 class OrganizerController extends AbstractController
 {
+    private function denyAdmins(): void
+    {
+        if ($this->isGranted(User::ROLE_ADMIN)) {
+            throw $this->createAccessDeniedException('Admins cannot access organizer area.');
+        }
+    }
+
     #[Route('/apply', name: 'app_organizer_apply')]
     public function apply(
         OrganizerProfileRepository $organizerProfiles,
         EntityManagerInterface $entityManager,
     ): Response {
+        $this->denyAdmins();
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -39,6 +48,8 @@ class OrganizerController extends AbstractController
     #[Route('/dashboard', name: 'app_organizer_dashboard')]
     public function dashboard(OrganizerProfileRepository $organizerProfiles): Response
     {
+        $this->denyAdmins();
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -52,6 +63,8 @@ class OrganizerController extends AbstractController
     #[Route('', name: 'app_organizer_home', methods: ['GET'])]
     public function home(OrganizerProfileRepository $organizerProfiles): Response
     {
+        $this->denyAdmins();
+
         /** @var User $user */
         $user = $this->getUser();
 

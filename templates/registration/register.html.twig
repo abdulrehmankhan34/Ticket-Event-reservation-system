@@ -3,20 +3,63 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Create account</h1>
-    <p>You will receive <strong>2000 credits</strong> on registration.</p>
+    <div style="
+        max-width: 520px;
+        margin: 0 auto;
+    ">
+        <h1 style="margin:0 0 6px 0; font-size: 28px; letter-spacing: -0.02em;">Create your account</h1>
+        <p style="margin:0 0 16px 0; color:#6b7280;">
+            You will receive <strong style="color:#111827;">2000 credits</strong> on registration.
+        </p>
 
-    {{ form_start(registrationForm) }}
-        <div style="display:grid; gap:12px; max-width: 520px;">
-            {{ form_row(registrationForm.email) }}
-            {{ form_row(registrationForm.plainPassword.first) }}
-            {{ form_row(registrationForm.plainPassword.second) }}
-            <button type="submit" style="padding:10px 12px;">Create account</button>
+        <div style="
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            background: #ffffff;
+            padding: 18px;
+            box-shadow: 0 10px 30px rgba(17,24,39,.06);
+        ">
+            {{ form_start(registrationForm) }}
+                <div style="display:grid; gap:12px;">
+                    {{ form_row(registrationForm.email, {
+                        attr: {
+                            style: 'width:95%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;'
+                        }
+                    }) }}
+
+                    {{ form_row(registrationForm.plainPassword.first, {
+                        attr: {
+                            style: 'width:95%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;'
+                        }
+                    }) }}
+
+                    {{ form_row(registrationForm.plainPassword.second, {
+                        attr: {
+                            style: 'width:95%; padding:10px 12px; border-radius:12px; border:1px solid #e5e7eb; outline:none;'
+                        }
+                    }) }}
+
+                    <button type="submit" style="
+                        padding:10px 12px;
+                        border-radius:12px;
+                        border:1px solid #1d4ed8;
+                        background:#2563eb;
+                        color:white;
+                        font-weight:700;
+                        cursor:pointer;
+                    ">
+                        Create account
+                    </button>
+                </div>
+            {{ form_end(registrationForm) }}
         </div>
-    {{ form_end(registrationForm) }}
 
-    <p style="margin-top: 12px;">
-        Already have an account? <a href="{{ path('app_login') }}">Login</a>
-    </p>
+        <p style="margin-top: 12px; color:#6b7280;">
+            Already have an account?
+            <a href="{{ path('app_login') }}" style="color:#2563eb; font-weight:700; text-decoration:none;">
+                Login
+            </a>
+        </p>
+    </div>
 {% endblock %}
 

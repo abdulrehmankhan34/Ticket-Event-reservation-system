@@ -9,28 +9,30 @@
     {% if pending is empty %}
         <p>No pending organizer applications.</p>
     {% else %}
-        <table style="width:100%; border-collapse: collapse;">
+        <table class="table" style="margin-top:10px;">
             <thead>
                 <tr>
-                    <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Email</th>
-                    <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Applied</th>
-                    <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actions</th>
+                    <th>Email</th>
+                    <th>Applied</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
             {% for p in pending %}
                 <tr>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.user.email }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.createdAt|date('Y-m-d H:i') }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee; display:flex; gap:8px; flex-wrap:wrap;">
+                    <td style="font-weight:650;">{{ p.user.email }}</td>
+                    <td style="color:#374151;">{{ p.createdAt|date('Y-m-d H:i') }}</td>
+                    <td>
+                        <div class="actions">
                         <form method="post" action="{{ path('app_admin_organizers_approve', {id: p.id}) }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('approve_org_' ~ p.id) }}">
-                            <button type="submit">Approve</button>
+                            <button class="btn btn-primary" type="submit">Approve</button>
                         </form>
                         <form method="post" action="{{ path('app_admin_organizers_reject', {id: p.id}) }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('reject_org_' ~ p.id) }}">
-                            <button type="submit">Reject</button>
+                            <button class="btn btn-danger" type="submit">Reject</button>
                         </form>
+                        </div>
                     </td>
                 </tr>
             {% endfor %}
@@ -42,25 +44,35 @@
     {% if all is empty %}
         <p>No organizer profiles yet.</p>
     {% else %}
-        <table style="width:100%; border-collapse: collapse;">
+        <table class="table" style="margin-top:10px;">
             <thead>
             <tr>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Emailll</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Status</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Active</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actions</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Active</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             {% for p in all %}
                 <tr>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.user.email }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.approvalStatus }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ p.active ? 'yes' : 'no' }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">
+                    <td style="font-weight:650;">{{ p.user.email }}</td>
+                    <td>
+                        <span class="pill">
+                            <span class="dot {{ p.approvalStatus in ['approved','active'] ? 'ok' : 'primary' }}"></span>
+                            {{ p.approvalStatus }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="pill">
+                            <span class="dot {{ p.active ? 'ok' : '' }}"></span>
+                            {{ p.active ? 'Active' : 'Inactive' }}
+                        </span>
+                    </td>
+                    <td>
                         <form method="post" action="{{ path('app_admin_organizers_toggle_active', {id: p.id}) }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle_org_' ~ p.id) }}">
-                            <button type="submit">{{ p.active ? 'Deactivate' : 'Reactivate' }}</button>
+                            <button class="btn {{ p.active ? 'btn-danger' : 'btn-primary' }}" type="submit">{{ p.active ? 'Deactivate' : 'Reactivate' }}</button>
                         </form>
                     </td>
                 </tr>

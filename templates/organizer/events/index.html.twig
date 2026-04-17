@@ -3,50 +3,165 @@
 {% block title %}My Events{% endblock %}
 
 {% block body %}
-    <h1>My events</h1>
+    <div style="max-width: 1100px; margin: 0 auto;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;">
+            <div>
+                <h1 style="margin:0 0 6px 0; font-size: 28px; letter-spacing:-0.02em;">My events</h1>
+                <p style="margin:0; color:#6b7280;">Create, edit, view stats, manage tiers, or cancel with refunds.</p>
+            </div>
 
-    <p>
-        <a href="{{ path('app_organizer_events_new') }}">+ Create event</a>
-    </p>
+            <a href="{{ path('app_organizer_events_new') }}" style="
+                display:inline-flex;
+                align-items:center;
+                gap:8px;
+                text-decoration:none;
+                padding:10px 12px;
+                border-radius:12px;
+                border:1px solid #1d4ed8;
+                background:#2563eb;
+                color:white;
+                font-weight:700;
+                white-space:nowrap;
+            ">
+                + Create event
+            </a>
+        </div>
 
-    {% if events is empty %}
-        <p>No events yet.</p>
-    {% else %}
-        <table style="width:100%; border-collapse: collapse;">
-            <thead>
-            <tr>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Name</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">When</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Status</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for e in events %}
-                <tr>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">
-                        <a href="{{ path('app_events_show', {id: e.id}) }}">{{ e.name }}</a>
-                    </td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ e.startsAt|date('Y-m-d H:i') }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ e.status }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee; display:flex; gap:10px; flex-wrap:wrap;">
-                        <a href="{{ path('app_organizer_events_edit', {id: e.id}) }}">Edit</a>
-                        <a href="{{ path('app_organizer_tiers_index', {eventId: e.id}) }}">Ticket tiers</a>
-                        <a href="{{ path('app_organizer_events_stats', {id: e.id}) }}">Stats</a>
+        <div style="
+            margin-top: 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            background: #ffffff;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(17,24,39,.06);
+        ">
+            {% if events is empty %}
+                <div style="padding:16px; color:#6b7280;">
+                    No events yet.
+                </div>
+            {% else %}
+                <table style="width:100%; border-collapse: collapse;">
+                    <thead>
+                    <tr style="background:#f9fafb;">
+                        <th style="text-align:left; border-bottom:1px solid #e5e7eb; padding:12px; font-size:12px; color:#6b7280; letter-spacing:.04em; text-transform:uppercase;">Event</th>
+                        <th style="text-align:left; border-bottom:1px solid #e5e7eb; padding:12px; font-size:12px; color:#6b7280; letter-spacing:.04em; text-transform:uppercase;">Starts</th>
+                        <th style="text-align:left; border-bottom:1px solid #e5e7eb; padding:12px; font-size:12px; color:#6b7280; letter-spacing:.04em; text-transform:uppercase;">Status</th>
+                        <th style="text-align:left; border-bottom:1px solid #e5e7eb; padding:12px; font-size:12px; color:#6b7280; letter-spacing:.04em; text-transform:uppercase;">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for e in events %}
+                        <tr>
+                            <td style="padding:12px; border-bottom:1px solid #f3f4f6;">
+                                <div style="display:flex; flex-direction:column; gap:4px;">
+                                    <a href="{{ path('app_events_show', {id: e.id}) }}" style="text-decoration:none; color:#111827; font-weight:800;">
+                                        {{ e.name }}
+                                    </a>
+                                    <span style="color:#6b7280; font-size:13px;">
+                                        ID #{{ e.id }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td style="padding:12px; border-bottom:1px solid #f3f4f6; color:#111827;">
+                                {{ e.startsAt|date('Y-m-d H:i') }}
+                            </td>
+                            <td style="padding:12px; border-bottom:1px solid #f3f4f6;">
+                                {% set badgeBg = '#f3f4f6' %}
+                                {% set badgeBorder = '#e5e7eb' %}
+                                {% set badgeColor = '#111827' %}
+                                {% if e.status == 'published' %}
+                                    {% set badgeBg = '#ecfdf5' %}
+                                    {% set badgeBorder = '#a7f3d0' %}
+                                    {% set badgeColor = '#065f46' %}
+                                {% elseif e.status == 'draft' %}
+                                    {% set badgeBg = '#eff6ff' %}
+                                    {% set badgeBorder = '#bfdbfe' %}
+                                    {% set badgeColor = '#1e40af' %}
+                                {% elseif e.status == 'cancelled' %}
+                                    {% set badgeBg = '#fff1f2' %}
+                                    {% set badgeBorder = '#fecdd3' %}
+                                    {% set badgeColor = '#9f1239' %}
+                                {% elseif e.status == 'postponed' %}
+                                    {% set badgeBg = '#fff7ed' %}
+                                    {% set badgeBorder = '#fed7aa' %}
+                                    {% set badgeColor = '#9a3412' %}
+                                {% elseif e.status == 'completed' %}
+                                    {% set badgeBg = '#f5f3ff' %}
+                                    {% set badgeBorder = '#ddd6fe' %}
+                                    {% set badgeColor = '#5b21b6' %}
+                                {% endif %}
 
-                        {% if e.status != 'cancelled' %}
-                            <form method="post" action="{{ path('app_organizer_events_cancel', {id: e.id}) }}">
-                                <input type="hidden" name="_token" value="{{ csrf_token('cancel_organizer_event_' ~ e.id) }}">
-                                <button type="submit" onclick="return confirm('Cancel this event and refund all ticket holders?')">
-                                    Cancel + refund
-                                </button>
-                            </form>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+                                <span style="
+                                    display:inline-flex;
+                                    align-items:center;
+                                    padding:6px 10px;
+                                    border-radius:999px;
+                                    font-size:12px;
+                                    font-weight:800;
+                                    background: {{ badgeBg }};
+                                    border: 1px solid {{ badgeBorder }};
+                                    color: {{ badgeColor }};
+                                    text-transform: capitalize;
+                                ">
+                                    {{ e.status }}
+                                </span>
+                            </td>
+                            <td style="padding:12px; border-bottom:1px solid #f3f4f6;">
+                                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                    <a href="{{ path('app_organizer_events_edit', {id: e.id}) }}" style="
+                                        text-decoration:none;
+                                        padding:8px 10px;
+                                        border-radius:10px;
+                                        border:1px solid #e5e7eb;
+                                        background:#ffffff;
+                                        color:#111827;
+                                        font-weight:700;
+                                    ">Edit</a>
+
+                                    <a href="{{ path('app_organizer_tiers_index', {eventId: e.id}) }}" style="
+                                        text-decoration:none;
+                                        padding:8px 10px;
+                                        border-radius:10px;
+                                        border:1px solid #e5e7eb;
+                                        background:#ffffff;
+                                        color:#111827;
+                                        font-weight:700;
+                                    ">Ticket tiers</a>
+
+                                    <a href="{{ path('app_organizer_events_stats', {id: e.id}) }}" style="
+                                        text-decoration:none;
+                                        padding:8px 10px;
+                                        border-radius:10px;
+                                        border:1px solid #e5e7eb;
+                                        background:#ffffff;
+                                        color:#111827;
+                                        font-weight:700;
+                                    ">Stats</a>
+
+                                    {% if e.status != 'cancelled' %}
+                                        <form method="post" action="{{ path('app_organizer_events_cancel', {id: e.id}) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('cancel_organizer_event_' ~ e.id) }}">
+                                            <button type="submit" onclick="return confirm('Cancel this event and refund all ticket holders?')" style="
+                                                padding:8px 10px;
+                                                border-radius:10px;
+                                                border:1px solid #fecaca;
+                                                background:#fff1f2;
+                                                color:#9f1239;
+                                                font-weight:800;
+                                                cursor:pointer;
+                                            ">
+                                                Cancel + refund
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
 

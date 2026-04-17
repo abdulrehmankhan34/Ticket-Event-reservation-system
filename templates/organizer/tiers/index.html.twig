@@ -3,53 +3,153 @@
 {% block title %}Ticket tiers{% endblock %}
 
 {% block body %}
-    <p><a href="{{ path('app_organizer_events_index') }}">← Back to my events</a></p>
-    <h1>Ticket tiers</h1>
-    <p><strong>Event:</strong> {{ event.name }}</p>
+    <div style="max-width: 1100px; margin: 0 auto;">
+        <p style="margin:0 0 12px 0;">
+            <a href="{{ path('app_organizer_events_index') }}" style="
+                display:inline-flex;
+                align-items:center;
+                gap:8px;
+                padding:8px 12px;
+                border:1px solid #e5e7eb;
+                border-radius:10px;
+                background:#ffffff;
+                color:#111827;
+                text-decoration:none;
+                font-weight:700;
+                box-shadow: 0 1px 8px rgba(0,0,0,.04);
+            ">
+                <span aria-hidden="true">←</span>
+                Back to my events
+            </a>
+        </p>
 
-    <p>
-        <a href="{{ path('app_organizer_tiers_new', {eventId: event.id}) }}">+ Create tier</a>
-    </p>
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;">
+            <div>
+                <h1 style="margin:0 0 6px 0; font-size: 28px; letter-spacing:-0.02em;">Ticket tiers</h1>
+                <p style="margin:0; color:#6b7280;">
+                    <strong style="color:#111827;">Event:</strong> {{ event.name }}
+                </p>
+            </div>
 
-    {% if tiers is empty %}
-        <p>No tiers yet.</p>
-    {% else %}
-        <table style="width:100%; border-collapse: collapse;">
-            <thead>
-            <tr>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Name</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Base price</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Total seats</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Remaining</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Sale window</th>
-                <th style="text-align:left; border-bottom:1px solid #ddd; padding:8px;">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for t in tiers %}
-                <tr>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ t.name }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ t.basePrice }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">{{ t.totalSeats }}</td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">
-                        {{ remainingByTierId[t.id]|default('—') }}
-                    </td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">
-                        {% if t.saleStartsAt or t.saleEndsAt %}
-                            {{ t.saleStartsAt ? t.saleStartsAt|date('Y-m-d H:i') : '—' }}
-                            →
-                            {{ t.saleEndsAt ? t.saleEndsAt|date('Y-m-d H:i') : '—' }}
-                        {% else %}
-                            —
-                        {% endif %}
-                    </td>
-                    <td style="padding:8px; border-bottom:1px solid #eee;">
-                        <a href="{{ path('app_organizer_tiers_edit', {eventId: event.id, id: t.id}) }}">Edit</a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+            <a href="{{ path('app_organizer_tiers_new', {eventId: event.id}) }}" style="
+                display:inline-flex;
+                align-items:center;
+                gap:8px;
+                text-decoration:none;
+                padding:10px 12px;
+                border-radius:12px;
+                border:1px solid #1d4ed8;
+                background:#2563eb;
+                color:white;
+                font-weight:700;
+                white-space:nowrap;
+            ">
+                + Create tier
+            </a>
+        </div>
+
+        <div style="
+            margin-top: 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            background: #ffffff;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(17,24,39,.06);
+        ">
+            {% if tiers is empty %}
+                <div style="padding:16px; color:#6b7280;">
+                    No tiers yet.
+                </div>
+            {% else %}
+                <table style="width:100%; border-collapse: collapse;">
+                    <thead>
+                    <tr style="background:#f9fafb;">
+                        <th style="text-align:left; border-bottom:1px solid #e5e7eb; padding:12px; font-size:12px; color:#6b7280; letter-spacing:.04em; text-transform:uppercase;">Tier</th>
+                        <th style="text-align:left; border-bottom:1px solid #e5e7eb; padding:12px; font-size:12px; color:#6b7280; letter-spacing:.04em; text-transform:uppercase;">Base</th>
+                        <th style="text-align:left; border-bottom:1px solid #e5e7eb; padding:12px; font-size:12px; color:#6b7280; letter-spacing:.04em; text-transform:uppercase;">Seats</th>
+                        <th style="text-align:left; border-bottom:1px solid #e5e7eb; padding:12px; font-size:12px; color:#6b7280; letter-spacing:.04em; text-transform:uppercase;">Remaining</th>
+                        <th style="text-align:left; border-bottom:1px solid #e5e7eb; padding:12px; font-size:12px; color:#6b7280; letter-spacing:.04em; text-transform:uppercase;">Sale window</th>
+                        <th style="text-align:left; border-bottom:1px solid #e5e7eb; padding:12px; font-size:12px; color:#6b7280; letter-spacing:.04em; text-transform:uppercase;">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for t in tiers %}
+                        {% set remaining = remainingByTierId[t.id]|default(null) %}
+                        <tr>
+                            <td style="padding:12px; border-bottom:1px solid #f3f4f6;">
+                                <div style="display:flex; flex-direction:column; gap:4px;">
+                                    <span style="font-weight:800; color:#111827;">{{ t.name }}</span>
+                                    <span style="color:#6b7280; font-size:13px;">Tier #{{ t.id }}</span>
+                                </div>
+                            </td>
+                            <td style="padding:12px; border-bottom:1px solid #f3f4f6; color:#111827;">
+                                {{ t.basePrice }} credits
+                            </td>
+                            <td style="padding:12px; border-bottom:1px solid #f3f4f6; color:#111827;">
+                                {{ t.totalSeats }}
+                            </td>
+                            <td style="padding:12px; border-bottom:1px solid #f3f4f6;">
+                                {% if remaining is not null %}
+                                    {% if remaining > 0 %}
+                                        <span style="
+                                            display:inline-flex;
+                                            align-items:center;
+                                            padding:6px 10px;
+                                            border-radius:999px;
+                                            font-size:12px;
+                                            font-weight:800;
+                                            background:#ecfdf5;
+                                            border:1px solid #a7f3d0;
+                                            color:#065f46;
+                                        ">{{ remaining }} left</span>
+                                    {% else %}
+                                        <span style="
+                                            display:inline-flex;
+                                            align-items:center;
+                                            padding:6px 10px;
+                                            border-radius:999px;
+                                            font-size:12px;
+                                            font-weight:800;
+                                            background:#fff1f2;
+                                            border:1px solid #fecdd3;
+                                            color:#9f1239;
+                                        ">Sold out</span>
+                                    {% endif %}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td style="padding:12px; border-bottom:1px solid #f3f4f6; color:#111827;">
+                                {% if t.saleStartsAt or t.saleEndsAt %}
+                                    <div style="display:flex; flex-direction:column; gap:4px;">
+                                        <span style="font-size:13px; color:#111827;">
+                                            {{ t.saleStartsAt ? t.saleStartsAt|date('Y-m-d H:i') : '—' }}
+                                        </span>
+                                        <span style="font-size:13px; color:#6b7280;">
+                                            → {{ t.saleEndsAt ? t.saleEndsAt|date('Y-m-d H:i') : '—' }}
+                                        </span>
+                                    </div>
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td style="padding:12px; border-bottom:1px solid #f3f4f6;">
+                                <a href="{{ path('app_organizer_tiers_edit', {eventId: event.id, id: t.id}) }}" style="
+                                    text-decoration:none;
+                                    padding:8px 10px;
+                                    border-radius:10px;
+                                    border:1px solid #e5e7eb;
+                                    background:#ffffff;
+                                    color:#111827;
+                                    font-weight:700;
+                                ">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
 

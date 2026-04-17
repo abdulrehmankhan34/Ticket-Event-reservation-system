@@ -3,34 +3,95 @@
 {% block title %}Login{% endblock %}
 
 {% block body %}
-    <h1>Login</h1>
+    <div style="
+        max-width: 520px;
+        margin: 0 auto;
+    ">
+        <h1 style="margin:0 0 6px 0; font-size: 28px; letter-spacing: -0.02em;">Welcome back</h1>
+        <p style="margin:0 0 16px 0; color:#6b7280;">Sign in to continue.</p>
 
-    {% if error %}
-        <div style="padding: 12px; background: #ffe5e5; border: 1px solid #ffb3b3; margin-bottom: 12px;">
-            {{ error.messageKey|trans(error.messageData, 'security') }}
+        {% if error %}
+            <div style="
+                padding: 12px;
+                background: #fff1f2;
+                border: 1px solid #fecdd3;
+                color:#9f1239;
+                border-radius: 12px;
+                margin-bottom: 12px;
+                font-weight: 600;
+            ">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
+        {% endif %}
+
+        <div style="
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            background: #ffffff;
+            padding: 18px;
+            box-shadow: 0 10px 30px rgba(17,24,39,.06);
+        ">
+            <form method="post">
+                <div style="display:grid; gap:12px;">
+                    <label style="display:grid; gap:6px; font-weight: 600; color:#111827;">
+                        <span style="font-size: 13px; color:#374151;">Email</span>
+                        <input
+                            type="email"
+                            name="_username"
+                            value="{{ last_username }}"
+                            autocomplete="email"
+                            required
+                            autofocus
+                            style="
+                                width:95%;
+                                padding:10px 12px;
+                                border-radius:12px;
+                                border:1px solid #e5e7eb;
+                                outline:none;
+                            "
+                        >
+                    </label>
+
+                    <label style="display:grid; gap:6px; font-weight: 600; color:#111827;">
+                        <span style="font-size: 13px; color:#374151;">Password</span>
+                        <input
+                            type="password"
+                            name="_password"
+                            autocomplete="current-password"
+                            required
+                            style="
+                                width:95%;
+                                padding:10px 12px;
+                                border-radius:12px;
+                                border:1px solid #e5e7eb;
+                                outline:none;
+                            "
+                        >
+                    </label>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <button type="submit" style="
+                        padding:10px 12px;
+                        border-radius:12px;
+                        border:1px solid #1d4ed8;
+                        background:#2563eb;
+                        color:white;
+                        font-weight:700;
+                        cursor:pointer;
+                    ">
+                        Sign in
+                    </button>
+                </div>
+            </form>
         </div>
-    {% endif %}
 
-    <form method="post">
-        <div style="display:grid; gap:12px; max-width: 420px;">
-            <label>
-                Email
-                <input type="email" name="_username" value="{{ last_username }}" autocomplete="email" required autofocus style="width:100%; padding:8px;">
-            </label>
-
-            <label>
-                Password
-                <input type="password" name="_password" autocomplete="current-password" required style="width:100%; padding:8px;">
-            </label>
-
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-            <button type="submit" style="padding:10px 12px;">Sign in</button>
-        </div>
-    </form>
-
-    <p style="margin-top: 12px;">
-        No account? <a href="{{ path('app_register') }}">Register</a>
-    </p>
+        <p style="margin-top: 12px; color:#6b7280;">
+            No account?
+            <a href="{{ path('app_register') }}" style="color:#2563eb; font-weight:700; text-decoration:none;">
+                Register
+            </a>
+        </p>
+    </div>
 {% endblock %}
 
